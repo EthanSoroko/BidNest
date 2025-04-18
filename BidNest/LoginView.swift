@@ -8,19 +8,26 @@
 import SwiftUI
 import Firebase
 import FirebaseAuth
+import FirebaseFirestore
 
 struct LoginView: View {
     enum Field {
         case email, password
     }
     
+    @State private var profileVM = ProfileViewModel()
     @State private var email = ""
     @State private var password = ""
     @State private var showingAlert = false
     @State private var alertMessage = ""
     @State private var buttonDisabled = true
     @State private var passwordInfoShown = false
+    @State private var presentAppSheet = false
+    @State private var profilesLoaded = false
+    @State private var loadingFinished = false
     @FocusState private var focusField: Field?
+    
+    @FirestoreQuery(collectionPath: "profiles") var profiles: [Profile]
     
     var body: some View {
         VStack {
@@ -71,7 +78,7 @@ struct LoginView: View {
                 .padding(.trailing)
                 
                 Button("Log In") {
-                    //TODO: Action Here
+                    login()
                 }
                 .padding(.leading)
             }
@@ -95,6 +102,32 @@ struct LoginView: View {
         .background(Color.bgcolor)
         .sheet(isPresented: $passwordInfoShown) {
             PasswordInfoView()
+        }
+        .onAppear() {
+            if Auth.auth().currentUser != nil {
+                presentAppSheet = true
+            }
+        }
+        .onChange(of: profilesLoaded) {
+            if profilesLoaded && presentAppSheet {
+                print("loading finished")
+                loadingFinished = true
+            }
+        }
+        .onChange(of: presentAppSheet) {
+            if profilesLoaded && presentAppSheet {
+                print("loading finished")
+                loadingFinished = true
+            }
+        }
+        .onChange(of: profiles) {
+            profilesLoaded = true
+        }
+        .fullScreenCover(isPresented: $loadingFinished, onDismiss: {
+            presentAppSheet = false
+            loadingFinished = false
+        }) {
+            TicketTabView(profile: profileVM.getProfile())
         }
     }
     
@@ -122,11 +155,13 @@ struct LoginView: View {
         Auth.auth().createUser(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("😡 Sign Up Error: \(error.localizedDescription)")
-                alertMessage = "Sign Up Error: Password must be at least 10 characters and include an uppercase letter, a number, and a special symbol."
+                alertMessage = "Sign Up Error: Please enter a valid email and password."
                 showingAlert = true
             } else {
                 print("😎 Registration Success!")
-                //TODO: Load NextView
+                email = ""
+                password = ""
+                presentAppSheet = true
             }
         }
     }
@@ -139,7 +174,9 @@ struct LoginView: View {
                 showingAlert = true
             } else {
                 print("🪵 Log In Success!")
-                //TODO: Load NextView
+                email = ""
+                password = ""
+                presentAppSheet = true
             }
         }
     }

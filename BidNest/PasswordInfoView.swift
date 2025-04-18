@@ -31,12 +31,14 @@ struct PasswordInfoView: View {
                 
                 Text("4: Must contain a special character (e.g., !@#$%^&*())")
             }
+            .font(.title2)
             
             Button("Okay") {
                 dismiss()
             }
             .buttonStyle(.borderedProminent)
             .tint(.appcolor)
+            .font(.title2)
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)
