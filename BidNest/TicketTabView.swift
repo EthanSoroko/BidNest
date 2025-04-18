@@ -12,7 +12,9 @@ import FirebaseFirestore
 
 struct TicketTabView: View {
     @FirestoreQuery(collectionPath: "profiles") var profiles: [Profile]
+    @State private var profileVM = ProfileViewModel()
     @State var profile: Profile
+    @State private var loadView = false
     
     var body: some View {
         TabView {
@@ -40,19 +42,25 @@ struct TicketTabView: View {
                 .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
                 .toolbarBackgroundVisibility(.visible, for: .tabBar)
             
-            ProfileView(profile: profile)
-                .tabItem {
-                    Image(systemName: "person.crop.circle")
-                    Text("Profile")
-                }
-                .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
-                .toolbarBackgroundVisibility(.visible, for: .tabBar)
+            if loadView {
+                ProfileView(profile: profile)
+                    .tabItem {
+                        Image(systemName: "person.crop.circle")
+                        Text("Profile")
+                    }
+                    .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
+                    .toolbarBackgroundVisibility(.visible, for: .tabBar)
+            }
         }
         .tint(.appcolor)
         .onAppear() {
             print("Profile: \(profile.id!)")
             print("Profile DN: \(profile.displayName)")
             print("Profile Image: \(profile.profileImage)")
+        }
+        .task {
+            profile = await profileVM.getProfile()
+            loadView = true
         }
     }
 }

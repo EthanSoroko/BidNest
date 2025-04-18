@@ -21,6 +21,7 @@ struct TicketEditView: View {
     @State private var location = ""
     @State private var price = ""
     @State private var additionalInfo = ""
+    @State private var profile = Profile()
     
     @Environment(\.dismiss) private var dismiss
     
@@ -116,6 +117,9 @@ struct TicketEditView: View {
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
+        .task {
+            profile = await profileVM.getProfile()
+        }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Cancel") {
@@ -125,8 +129,6 @@ struct TicketEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save") {
-                    let profile = profileVM.getProfile()
-                    
                     let success = ticketVM.saveTicket(ticket: Ticket(eventName: eventName, eventType: eventType, location: location, price: Double(price)!, sellerId: profile.id!, sellerName: profile.displayName, isSold: false, additionalInfo: additionalInfo))
                     
                     if success {

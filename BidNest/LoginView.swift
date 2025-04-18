@@ -26,8 +26,8 @@ struct LoginView: View {
     @State private var profilesLoaded = false
     @State private var loadingFinished = false
     @FocusState private var focusField: Field?
-    
     @FirestoreQuery(collectionPath: "profiles") var profiles: [Profile]
+    @State private var profile = Profile()
     
     var body: some View {
         VStack {
@@ -127,7 +127,11 @@ struct LoginView: View {
             presentAppSheet = false
             loadingFinished = false
         }) {
-            TicketTabView(profile: profileVM.getProfile())
+            TicketTabView(profile: profile)
+        }
+        .task {
+            profile = await profileVM.getProfile()
+            print("Profile: \(profile)")
         }
     }
     
