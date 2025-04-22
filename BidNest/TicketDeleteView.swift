@@ -66,6 +66,7 @@ struct TicketDeleteView: View {
                 Text("\(ticket.price.formatted(.currency(code: "USD")))")
             }
             .font(.title2)
+            .padding(.bottom)
             
             HStack {
                 Text("Current Highest Bidder:")
@@ -98,6 +99,9 @@ struct TicketDeleteView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
         .toolbarVisibility(.hidden, for: .tabBar)
+        .task {
+            profile = await profileVM.getProfile()
+        }
     }
 }
 

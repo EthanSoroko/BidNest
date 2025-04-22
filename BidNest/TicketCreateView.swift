@@ -10,7 +10,6 @@ import Firebase
 import FirebaseFirestore
 import FirebaseAuth
 
-
 struct TicketCreateView: View {
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
@@ -22,9 +21,9 @@ struct TicketCreateView: View {
     @State private var additionalInfo = ""
     @State private var profile = Profile()
     @State var ticket: Ticket
+    @State private var photoSheetIsPresented = false
     
     @Environment(\.dismiss) private var dismiss
-    
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -112,6 +111,42 @@ struct TicketCreateView: View {
             }
             .font(.title2)
             
+            Button {
+                if ticket.id == nil {
+                    let newTicket = Ticket(
+                        id: ticket.id,
+                        eventName: eventName,
+                        eventType: eventType,
+                        location: location,
+                        date: date,
+                        price: Double(price) ?? 1.00,
+                        sellerId: profile.id!,
+                        sellerName: profile.displayName,
+                        isSold: false,
+                        additionalInfo: additionalInfo,
+                        highestBidderId: profile.id ?? "1",
+                        highestBidderName: profile.displayName
+                    )
+                    let success = ticketVM.saveTicket(ticket: newTicket)
+                    if !success {
+                        print("ERROR Saving ticket before adding image")
+                    } else {
+                        print("Created new ticket while pressing photo button")
+                        ticket = newTicket
+                    }
+                    photoSheetIsPresented.toggle()
+                } else {
+                    photoSheetIsPresented.toggle()
+                }
+            } label: {
+                Image(systemName: "camera.fill")
+                Text("Photo of Ticket")
+            }
+            .buttonStyle(.borderedProminent)
+            .tint(.appcolor)
+            .frame(maxWidth: .infinity, alignment: .center)
+
+            
             Spacer()
         }
         .onAppear() {
@@ -123,6 +158,9 @@ struct TicketCreateView: View {
             price = String(ticket.price)
         }
         .padding()
+        .fullScreenCover(isPresented: $photoSheetIsPresented) {
+            PhotoView(ticket: ticket)
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
         .navigationBarBackButtonHidden()
@@ -162,7 +200,6 @@ struct TicketCreateView: View {
                     }
                     dismiss()
                 }
-
             }
         }
     }
