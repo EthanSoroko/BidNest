@@ -34,4 +34,22 @@ class TicketViewModel {
             }
         }
     }
+    
+    func deleteTicket(ticket: Ticket) async -> Bool {
+        let db = Firestore.firestore()
+
+        guard let id = ticket.id else {
+            print("Ticket ID is nil; cannot delete.")
+            return false
+        }
+
+        do {
+            try await db.collection("tickets").document(id).delete()
+            print("Ticket deleted successfully!")
+            return true
+        } catch {
+            print("Could not delete ticket in 'tickets': \(error.localizedDescription)")
+            return false
+        }
+    }
 }

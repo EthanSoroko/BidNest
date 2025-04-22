@@ -33,7 +33,7 @@ struct ProfileView: View {
                     .resizable()
                     .frame(width: 200, height: 200)
                     .clipShape(Circle())
-                    .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+                    .overlay(Circle().stroke(Color.gray, lineWidth: 6))
                     .padding(.top)
                 
                 Button(action: {

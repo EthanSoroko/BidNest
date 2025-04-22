@@ -1,5 +1,5 @@
 //
-//  TicketEditView.swift
+//  TicketCreateView.swift
 //  BidNest
 //
 //  Created by Ethan Soroko on 4/17/25.
@@ -11,10 +11,9 @@ import FirebaseFirestore
 import FirebaseAuth
 
 
-struct TicketEditView: View {
+struct TicketCreateView: View {
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
-    @State var ticket: Ticket
     @State private var eventName = ""
     @State private var eventType: EventType = .football
     @State private var date = Date()
@@ -22,6 +21,7 @@ struct TicketEditView: View {
     @State private var price = ""
     @State private var additionalInfo = ""
     @State private var profile = Profile()
+    @State var ticket: Ticket
     
     @Environment(\.dismiss) private var dismiss
     
@@ -84,7 +84,7 @@ struct TicketEditView: View {
             HStack {
                 Text("Seat Info:")
                 
-                TextField("Seat No. & Section", text: $location, axis: .vertical)
+                TextField("Seat No. & Section", text: $additionalInfo, axis: .vertical)
                     .textFieldStyle(.roundedBorder)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay {
@@ -114,9 +114,18 @@ struct TicketEditView: View {
             
             Spacer()
         }
+        .onAppear() {
+            eventName = ticket.eventName
+            eventType = ticket.eventType
+            date = ticket.date
+            location = ticket.location
+            additionalInfo = ticket.additionalInfo ?? ""
+            price = String(ticket.price)
+        }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
+        .navigationBarBackButtonHidden()
         .task {
             profile = await profileVM.getProfile()
         }
@@ -129,7 +138,22 @@ struct TicketEditView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button("Save") {
-                    let success = ticketVM.saveTicket(ticket: Ticket(eventName: eventName, eventType: eventType, location: location, price: Double(price)!, sellerId: profile.id!, sellerName: profile.displayName, isSold: false, additionalInfo: additionalInfo))
+                    let newTicket = Ticket(
+                        id: ticket.id,
+                        eventName: eventName,
+                        eventType: eventType,
+                        location: location,
+                        date: date,
+                        price: Double(price) ?? 1.00,
+                        sellerId: profile.id!,
+                        sellerName: profile.displayName,
+                        isSold: false,
+                        additionalInfo: additionalInfo,
+                        highestBidderId: profile.id ?? "1",
+                        highestBidderName: profile.displayName
+                    )
+
+                    let success = ticketVM.saveTicket(ticket: newTicket)
                     
                     if success {
                         print("Successfully saved ticket!")
@@ -138,6 +162,7 @@ struct TicketEditView: View {
                     }
                     dismiss()
                 }
+
             }
         }
     }
@@ -168,7 +193,7 @@ struct TicketEditView: View {
 }
 
 #Preview {
-    TicketEditView(ticket: Ticket(
+    TicketCreateView(ticket: Ticket(
         eventName: "Boston College vs. Notre Dame",
         eventType: .football,
         location: "Alumni Stadium",

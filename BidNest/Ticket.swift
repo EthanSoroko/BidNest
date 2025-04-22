@@ -68,6 +68,8 @@ struct Ticket: Identifiable, Codable {
     var sellerName: String = ""
     var isSold: Bool = false
     var additionalInfo: String? = ""
+    var highestBidderId: String = ""
+    var highestBidderName: String = ""
 
     var timestamp: Timestamp {
         Timestamp(date: date)

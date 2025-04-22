@@ -15,7 +15,7 @@ struct TicketTabView: View {
     @State private var profileVM = ProfileViewModel()
     @State var profile: Profile
     @State private var loadView = false
-    
+
     var body: some View {
         TabView {
             PublicTicketListView()
@@ -25,7 +25,7 @@ struct TicketTabView: View {
                 }
                 .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
                 .toolbarBackgroundVisibility(.visible, for: .tabBar)
-            
+
             UserPostingListView()
                 .tabItem {
                     Image(systemName: "doc.plaintext")
@@ -33,7 +33,7 @@ struct TicketTabView: View {
                 }
                 .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
                 .toolbarBackgroundVisibility(.visible, for: .tabBar)
-            
+
             UserTicketListView()
                 .tabItem {
                     Image(systemName: "wallet.bifold.fill")
@@ -41,7 +41,7 @@ struct TicketTabView: View {
                 }
                 .toolbarBackground(Color("toolbarcolor"), for: .tabBar)
                 .toolbarBackgroundVisibility(.visible, for: .tabBar)
-            
+
             if loadView {
                 ProfileView(profile: profile)
                     .tabItem {
@@ -53,10 +53,8 @@ struct TicketTabView: View {
             }
         }
         .tint(.appcolor)
-        .onAppear() {
+        .onAppear {
             print("Profile: \(profile.id!)")
-            print("Profile DN: \(profile.displayName)")
-            print("Profile Image: \(profile.profileImage)")
         }
         .task {
             profile = await profileVM.getProfile()
@@ -68,3 +66,4 @@ struct TicketTabView: View {
 #Preview {
     TicketTabView(profile: Profile(id: nil, displayName: nil, profileImage: nil))
 }
+

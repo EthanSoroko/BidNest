@@ -6,24 +6,46 @@
 //
 
 import SwiftUI
+import Firebase
+import FirebaseFirestore
+import FirebaseAuth
 
 struct UserTicketListView: View {
+    @State private var sheetIsPresented = false
+    @FirestoreQuery(collectionPath: "tickets") var tickets: [Ticket]
+    
     var body: some View {
         NavigationStack {
             List {
-                Text("Sample Ticket!")
-            }
-            .navigationTitle("Tickets:")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        //TODO: Add button code
-                    } label: {
-                        Image(systemName: "plus")
+                ForEach(tickets) { ticket in
+                    if ticket.highestBidderId == Auth.auth().currentUser?.uid && ticket.date < Date() {
+                        NavigationLink {
+                            TicketOwnedView(ticket: ticket)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Image(systemName: ticket.eventType.systemIconName)
+                                        .foregroundStyle(.appcolor)
+                                    
+                                    Text(ticket.eventName)
+                                }
+                                .font(.title2)
+                                
+                                HStack {
+                                    Text("\(ticket.date.formatted())")
+                                    
+                                    Spacer()
+                                    
+                                    Text("$\(ticket.price.formatted(.number.precision(.fractionLength(2))))")
+                                        .padding(.trailing)
+                                }
+                            }
+                        }
+                        .listRowBackground(Color.bgcolor.opacity(0.1))
                     }
-                    .tint(.appcolor)
                 }
             }
+            .navigationTitle("Owned Tickets:")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.bgcolor)
             .listStyle(.plain)
@@ -33,5 +55,5 @@ struct UserTicketListView: View {
 }
 
 #Preview {
-    UserTicketListView()
+    UserPostingListView()
 }

@@ -19,10 +19,33 @@ struct UserPostingListView: View {
         NavigationStack {
             List {
                 ForEach(tickets) { ticket in
-                    Text(ticket.eventName)
+                    if ticket.sellerId == Auth.auth().currentUser?.uid && ticket.date > Date() {
+                        NavigationLink {
+                            TicketDeleteView(ticket: ticket)
+                        } label: {
+                            VStack(alignment: .leading) {
+                                HStack {
+                                    Image(systemName: ticket.eventType.systemIconName)
+                                        .foregroundStyle(.appcolor)
+                                    
+                                    Text(ticket.eventName)
+                                }
+                                .font(.title2)
+                                
+                                HStack {
+                                    Text("\(ticket.date.formatted())")
+                                    
+                                    Spacer()
+                                    
+                                    Text("$\(ticket.price.formatted(.number.precision(.fractionLength(2))))")
+                                        .padding(.trailing)
+                                }
+                            }
+                        }
+                        .listRowBackground(Color.bgcolor.opacity(0.1))
+                    }
                 }
             }
-            .navigationTitle("My Postings:")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
@@ -34,13 +57,14 @@ struct UserPostingListView: View {
                     .font(.title2)
                 }
             }
+            .navigationTitle("My Postings:")
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .background(Color.bgcolor)
             .listStyle(.plain)
             .listItemTint(.appcolor)
             .sheet(isPresented: $sheetIsPresented) {
                 NavigationStack {
-                    TicketEditView(ticket: Ticket())
+                    TicketCreateView(ticket: Ticket())
                 }
             }
         }
