@@ -10,9 +10,9 @@ import FirebaseFirestore
 
 enum EventType: String, Codable, CaseIterable, Identifiable {
     case football, basketball, hockey, baseball, soccer, concert, theater, other
-
+    
     var id: String { rawValue }
-
+    
     var displayName: String {
         switch self {
         case .football: 
@@ -33,7 +33,7 @@ enum EventType: String, Codable, CaseIterable, Identifiable {
             return "Other"
         }
     }
-
+    
     var systemIconName: String {
         switch self {
         case .football:
@@ -58,7 +58,7 @@ enum EventType: String, Codable, CaseIterable, Identifiable {
 
 struct Ticket: Identifiable, Codable {
     @DocumentID var id: String?
-
+    
     var eventName: String = ""
     var eventType: EventType = .football
     var location: String = ""
@@ -70,11 +70,11 @@ struct Ticket: Identifiable, Codable {
     var additionalInfo: String? = ""
     var highestBidderId: String = ""
     var highestBidderName: String = ""
-
+    
     var timestamp: Timestamp {
         Timestamp(date: date)
     }
-
+    
     var formattedDate: String {
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct TicketOwnedView: View {
     @Environment(\.dismiss) private var dismiss
-    
+    @FirestoreQuery(collectionPath: "tickets") var photos: [Photo]
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
     @State private var profile = Profile()
@@ -67,9 +68,29 @@ struct TicketOwnedView: View {
             }
             .font(.title2)
             
+            if let photo = photos.first, let url = URL(string: photo.imageURLString) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } placeholder: {
+                    ProgressView()
+                        .tint(.appcolor)
+                }
+            } else {
+                Text("Please add ticket photo.")
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
             Spacer()
         }
         .padding()
+        .task {
+            $photos.path = "tickets/\(ticket.id ?? "")/photos"
+        }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
         .toolbarVisibility(.hidden, for: .tabBar)

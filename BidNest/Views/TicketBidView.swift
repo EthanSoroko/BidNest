@@ -14,7 +14,6 @@ struct TicketBidView: View {
     @State private var ticketVM = TicketViewModel()
     @State private var profile = Profile()
     @State var ticket: Ticket
-//    @State private var price = "0.00"
     @State private var bidOffer = "0.00"
     @State private var bidOffers = ["1.00", "1.00", "1.00"]
     @State private var bidDisabled = true
@@ -69,14 +68,18 @@ struct TicketBidView: View {
                 Text("\(ticket.price.formatted(.currency(code: "USD")))")
             }
             .font(.title2)
+            .padding(.bottom)
             
             HStack {
                 Text("Current Highest Bidder:")
                     .fontWeight(.bold)
+                    .minimumScaleFactor(0.5)
+                    .lineLimit(1)
                 
                 Text(ticket.highestBidderId == ticket.sellerId ? "None" : ticket.highestBidderName)
             }
             .font(.title2)
+            .padding(.bottom)
             
             HStack {
                 Text("Your Bid (USD):")
@@ -96,6 +99,7 @@ struct TicketBidView: View {
                     }
             }
             .font(.title2)
+            .padding(.bottom)
             
             HStack {
                 Text("Suggested Bids (USD):")
@@ -125,10 +129,10 @@ struct TicketBidView: View {
                     highestBidderId: profile.id ?? "1",
                     highestBidderName: profile.displayName
                 )
-
-                let success = ticketVM.saveTicket(ticket: newTicket)
                 
-                if success {
+                let savedTicket = ticketVM.saveTicket(ticket: newTicket)
+                
+                if savedTicket != nil {
                     print("Successfully saved ticket!")
                 } else {
                     print("Failed to save ticket.")

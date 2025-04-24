@@ -14,7 +14,7 @@ struct ProfileView: View {
     let imageNames = ["profile1", "profile2", "profile3", "profile4", "profile5", "profile6", "profile7", "profile8", "profile9"]
     
     @Environment(\.dismiss) private var dismiss
-        
+    
     @State var profileVM = ProfileViewModel()
     @State private var profileImage = ""
     @State private var showImagePicker = false

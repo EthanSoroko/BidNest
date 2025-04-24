@@ -11,6 +11,7 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct TicketCreateView: View {
+    @FirestoreQuery(collectionPath: "tickets") var photos: [Photo]
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
     @State private var eventName = ""
@@ -96,7 +97,7 @@ struct TicketCreateView: View {
             HStack {
                 Text("Starting Price:")
                 
-                TextField("Enter Price", text: $price)
+                TextField("Enter Price (USD)", text: $price)
                     .keyboardType(.decimalPad)
                     .onChange(of: price) {
                         let filtered = filterPriceInput(price)
@@ -112,31 +113,33 @@ struct TicketCreateView: View {
             .font(.title2)
             
             Button {
-                if ticket.id == nil {
-                    let newTicket = Ticket(
-                        id: ticket.id,
-                        eventName: eventName,
-                        eventType: eventType,
-                        location: location,
-                        date: date,
-                        price: Double(price) ?? 1.00,
-                        sellerId: profile.id!,
-                        sellerName: profile.displayName,
-                        isSold: false,
-                        additionalInfo: additionalInfo,
-                        highestBidderId: profile.id ?? "1",
-                        highestBidderName: profile.displayName
-                    )
-                    let success = ticketVM.saveTicket(ticket: newTicket)
-                    if !success {
-                        print("ERROR Saving ticket before adding image")
+                Task {
+                    if ticket.id == nil {
+                        let newTicket = Ticket(
+                            id: ticket.id,
+                            eventName: eventName,
+                            eventType: eventType,
+                            location: location,
+                            date: date,
+                            price: Double(price) ?? 1.00,
+                            sellerId: profile.id!,
+                            sellerName: profile.displayName,
+                            isSold: false,
+                            additionalInfo: additionalInfo,
+                            highestBidderId: profile.id ?? "1",
+                            highestBidderName: profile.displayName
+                        )
+                        let savedTicket = ticketVM.saveTicket(ticket: newTicket)
+                        if savedTicket == nil {
+                            print("ERROR Saving ticket before adding image")
+                        } else {
+                            print("Created new ticket while pressing photo button")
+                            ticket = savedTicket!
+                        }
+                        photoSheetIsPresented.toggle()
                     } else {
-                        print("Created new ticket while pressing photo button")
-                        ticket = newTicket
+                        photoSheetIsPresented.toggle()
                     }
-                    photoSheetIsPresented.toggle()
-                } else {
-                    photoSheetIsPresented.toggle()
                 }
             } label: {
                 Image(systemName: "camera.fill")
@@ -145,7 +148,24 @@ struct TicketCreateView: View {
             .buttonStyle(.borderedProminent)
             .tint(.appcolor)
             .frame(maxWidth: .infinity, alignment: .center)
-
+            
+            if let photo = photos.first, let url = URL(string: photo.imageURLString) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } placeholder: {
+                    ProgressView()
+                        .tint(.appcolor)
+                }
+            } else {
+                Text("Please add ticket photo.")
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
+            
             
             Spacer()
         }
@@ -155,17 +175,23 @@ struct TicketCreateView: View {
             date = ticket.date
             location = ticket.location
             additionalInfo = ticket.additionalInfo ?? ""
-            price = String(ticket.price)
         }
         .padding()
         .fullScreenCover(isPresented: $photoSheetIsPresented) {
-            PhotoView(ticket: ticket)
+            PhotoView(ticket: $ticket)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)
         .navigationBarBackButtonHidden()
         .task {
             profile = await profileVM.getProfile()
+        }
+        .onChange(of: ticket.id) {
+            Task {
+                if ticket.id != nil {
+                    $photos.path = "tickets/\(ticket.id ?? "")/photos"
+                }
+            }
         }
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -190,10 +216,10 @@ struct TicketCreateView: View {
                         highestBidderId: profile.id ?? "1",
                         highestBidderName: profile.displayName
                     )
-
-                    let success = ticketVM.saveTicket(ticket: newTicket)
                     
-                    if success {
+                    let savedTicket = ticketVM.saveTicket(ticket: newTicket)
+                    
+                    if savedTicket != nil {
                         print("Successfully saved ticket!")
                     } else {
                         print("Failed to save ticket.")

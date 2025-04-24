@@ -9,7 +9,7 @@ import SwiftUI
 import PhotosUI
 
 struct PhotoView: View {
-    @State var ticket: Ticket
+    @Binding var ticket: Ticket
     @State private var photo = Photo()
     @State private var data = Data()
     @State private var selectedPhoto: PhotosPickerItem?
@@ -33,6 +33,8 @@ struct PhotoView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Save") {
                             Task {
+                                print("Ticket id: \(ticket.id ?? "")")
+                                print("Ticket name: \(ticket.eventName)")
                                 await PhotoViewModel.saveImage(ticket: ticket, photo: photo, data: data)
                                 dismiss()
                             }
@@ -68,7 +70,7 @@ struct PhotoView: View {
 }
 
 #Preview {
-    PhotoView(ticket: Ticket(
+    @Previewable @State var ticket = Ticket(
         eventName: "Boston College vs. Notre Dame",
         eventType: .football,
         location: "Alumni Stadium",
@@ -78,5 +80,7 @@ struct PhotoView: View {
         sellerName: "ABC",
         isSold: false,
         additionalInfo: "Student section, row 12"
-    ))
+    )
+    
+    PhotoView(ticket: $ticket)
 }

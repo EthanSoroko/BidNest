@@ -174,7 +174,7 @@ struct LoginView: View {
         Auth.auth().signIn(withEmail: email, password: password) { result, error in
             if let error = error {
                 print("😡 Log In Error: \(error.localizedDescription)")
-                alertMessage = "Log In Error: \(error.localizedDescription)"
+                alertMessage = "Log In Error: Make sure you entered the correct email and password."
                 showingAlert = true
             } else {
                 print("🪵 Log In Success!")

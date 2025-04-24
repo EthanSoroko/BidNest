@@ -35,22 +35,22 @@ class ProfileViewModel {
         }
     }
     
-//    func getProfile() -> Profile {
-//        @FirestoreQuery(collectionPath: "profiles") var profiles: [Profile]
-//
-//        print("getProfile() Called!")
-//        
-//        guard let uid = Auth.auth().currentUser?.uid else {
-//            print("⚠️ No current user")
-//            return Profile(id: nil, displayName: nil, profileImage: nil)
-//        }
-//        
-//        print(profiles)
-//        
-//        print("\(profiles.first(where: { $0.id == uid })?.displayName ?? "NOPE")")
-//        
-//        return profiles.first(where: { $0.id == uid }) ?? Profile(id: uid, displayName: nil, profileImage: nil)
-//    }
+    //    func getProfile() -> Profile {
+    //        @FirestoreQuery(collectionPath: "profiles") var profiles: [Profile]
+    //
+    //        print("getProfile() Called!")
+    //
+    //        guard let uid = Auth.auth().currentUser?.uid else {
+    //            print("⚠️ No current user")
+    //            return Profile(id: nil, displayName: nil, profileImage: nil)
+    //        }
+    //
+    //        print(profiles)
+    //
+    //        print("\(profiles.first(where: { $0.id == uid })?.displayName ?? "NOPE")")
+    //
+    //        return profiles.first(where: { $0.id == uid }) ?? Profile(id: uid, displayName: nil, profileImage: nil)
+    //    }
     
     func getProfile() async -> Profile {
         print("getProfile() Called!")
@@ -59,9 +59,9 @@ class ProfileViewModel {
             print("⚠️ No current user")
             return Profile(id: nil, displayName: nil, profileImage: nil)
         }
-
+        
         let docRef = Firestore.firestore().collection("profiles").document(uid)
-
+        
         do {
             let document = try await docRef.getDocument()
             if let data = document.data() {
@@ -81,5 +81,5 @@ class ProfileViewModel {
             return Profile(id: uid, displayName: nil, profileImage: nil)
         }
     }
-
+    
 }
