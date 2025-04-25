@@ -35,6 +35,7 @@ struct PublicTicketListView: View {
                             }.tag(Optional(eventType))
                         }
                     }
+                    .tint(.appcolor)
                     .pickerStyle(.automatic)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .background(.bgcolor)
@@ -73,7 +74,6 @@ struct PublicTicketListView: View {
                                         
                                         Text(ticket.eventName)
                                     }
-                                    .font(.title2)
                                     
                                     HStack {
                                         Text("\(ticket.date.formatted())")
@@ -83,6 +83,7 @@ struct PublicTicketListView: View {
                                         Text("$\(ticket.price.formatted(.number.precision(.fractionLength(2))))")
                                             .padding(.trailing)
                                     }
+                                    .font(.custom("Menlo", size: 15))
                                 }
                             }
                             .listRowBackground(Color.bgcolor.opacity(0.1))
@@ -92,7 +93,14 @@ struct PublicTicketListView: View {
                 .task {
                     await fetchFilteredTickets()
                 }
-                .navigationTitle("Public Ticket Auction:")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Public Ticket Auction")
+                            .padding(.top, 60)
+                            .font(.custom("Menlo", size: 28))
+                            .fontWeight(.bold)
+                    }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)
                 .background(Color.bgcolor)
@@ -107,6 +115,7 @@ struct PublicTicketListView: View {
                     AuctionInfoView()
                 }
             }
+            .font(.custom("Menlo", size: 20))
         }
     }
     
@@ -135,6 +144,6 @@ struct PublicTicketListView: View {
 
 #Preview {
     NavigationStack {
-        UserPostingListView()
+        PublicTicketListView()
     }
 }

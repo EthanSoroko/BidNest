@@ -33,6 +33,7 @@ struct UserPostingListView: View {
                         }.tag(Optional(eventType))
                     }
                 }
+                .tint(.appcolor)
                 .pickerStyle(.automatic)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(.bgcolor)
@@ -60,7 +61,6 @@ struct UserPostingListView: View {
                                         
                                         Text(ticket.eventName)
                                     }
-                                    .font(.title2)
                                     
                                     HStack {
                                         Text("\(ticket.date.formatted())")
@@ -70,6 +70,7 @@ struct UserPostingListView: View {
                                         Text("$\(ticket.price.formatted(.number.precision(.fractionLength(2))))")
                                             .padding(.trailing)
                                     }
+                                    .font(.custom("Menlo", size: 15))
                                 }
                             }
                             .listRowBackground(Color.bgcolor.opacity(0.1))
@@ -84,13 +85,19 @@ struct UserPostingListView: View {
                             Image(systemName: "plus")
                         }
                         .tint(.appcolor)
-                        .font(.title2)
                     }
                 }
                 .task {
                     await fetchFilteredTickets()
                 }
-                .navigationTitle("My Listings:")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("My Auction Listings")
+                            .padding(.top, 60)
+                            .font(.custom("Menlo", size: 28))
+                            .fontWeight(.bold)
+                    }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)
                 .background(Color.bgcolor)
@@ -102,8 +109,7 @@ struct UserPostingListView: View {
                     }
                 }
             }
-            
-            
+            .font(.custom("Menlo", size: 20))
         }
     }
     

@@ -20,7 +20,7 @@ struct TicketOwnedView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(ticket.eventName)
-                .font(.title)
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
                 .padding(.bottom)
             
@@ -30,7 +30,6 @@ struct TicketOwnedView: View {
                 
                 Text(ticket.eventType.displayName)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -39,7 +38,6 @@ struct TicketOwnedView: View {
                 
                 Text(String(ticket.date.formatted()))
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -48,7 +46,6 @@ struct TicketOwnedView: View {
                 
                 Text(ticket.location)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -57,7 +54,6 @@ struct TicketOwnedView: View {
                 
                 Text(ticket.additionalInfo ?? "")
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -66,7 +62,7 @@ struct TicketOwnedView: View {
                 
                 Text("\(ticket.price.formatted(.currency(code: "USD")))")
             }
-            .font(.title2)
+            .padding(.bottom)
             
             if let photo = photos.first, let url = URL(string: photo.imageURLString) {
                 AsyncImage(url: url) { image in
@@ -80,16 +76,19 @@ struct TicketOwnedView: View {
                         .tint(.appcolor)
                 }
             } else {
-                Text("Please add ticket photo.")
+                Text("Ticket Photo Missing.")
                     .foregroundColor(.gray)
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             
             Spacer()
         }
+        .font(.custom("Menlo", size: 20))
         .padding()
         .task {
-            $photos.path = "tickets/\(ticket.id ?? "")/photos"
+            if ticket.id != nil {
+                $photos.path = "tickets/\(ticket.id ?? "")/photos"
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .background(.bgcolor)

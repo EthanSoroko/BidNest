@@ -21,7 +21,7 @@ struct TicketBidView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(ticket.eventName)
-                .font(.title)
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
                 .padding(.bottom)
             
@@ -31,7 +31,6 @@ struct TicketBidView: View {
                 
                 Text(ticket.eventType.displayName)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -40,7 +39,6 @@ struct TicketBidView: View {
                 
                 Text(String(ticket.date.formatted()))
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -49,7 +47,6 @@ struct TicketBidView: View {
                 
                 Text(ticket.location)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -58,7 +55,6 @@ struct TicketBidView: View {
                 
                 Text(ticket.additionalInfo ?? "")
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -67,7 +63,6 @@ struct TicketBidView: View {
                 
                 Text("\(ticket.price.formatted(.currency(code: "USD")))")
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -78,7 +73,6 @@ struct TicketBidView: View {
                 
                 Text(ticket.highestBidderId == ticket.sellerId ? "None" : ticket.highestBidderName)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -98,7 +92,6 @@ struct TicketBidView: View {
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -111,7 +104,6 @@ struct TicketBidView: View {
                     }
                 }
                 .pickerStyle(.segmented)
-                .font(.title2)
             }
             
             Button("Place Bid") {
@@ -153,6 +145,7 @@ struct TicketBidView: View {
             
             Spacer()
         }
+        .font(.custom("Menlo", size: 20))
         .onAppear() {
             bidOffers[0] = String(Double((Double(bidOffers[0]) ?? 1.00) * ticket.price * 1.1).formatted(.number.precision(.fractionLength(2))))
             bidOffers[1] = String(Double((Double(bidOffers[1]) ?? 1.00) * ticket.price * 1.25).formatted(.number.precision(.fractionLength(2))))

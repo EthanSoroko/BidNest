@@ -28,6 +28,7 @@ struct PhotoView: View {
                             dismiss()
                         }
                         .tint(.appcolor)
+                        .font(.custom("Menlo", size: 20))
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
@@ -40,6 +41,7 @@ struct PhotoView: View {
                             }
                         }
                         .tint(.appcolor)
+                        .font(.custom("Menlo", size: 20))
                     }
                 }
                 .photosPicker(isPresented: $pickerIsPresented, selection: $selectedPhoto)

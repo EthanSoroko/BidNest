@@ -41,7 +41,8 @@ struct LoginView: View {
                 .padding(.bottom)
             
             Group {
-                TextField("email", text: $email)
+                TextField("Email", text: $email)
+                    .font(.custom("Menlo", size: 20))
                     .keyboardType(.emailAddress)
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
@@ -54,7 +55,8 @@ struct LoginView: View {
                         enableButtons()
                     }
                 
-                SecureField("password", text: $password)
+                SecureField("Password", text: $password)
+                    .font(.custom("Menlo", size: 20))
                     .submitLabel(.done)
                     .focused($focusField, equals: .password)
                     .onSubmit {
@@ -76,11 +78,13 @@ struct LoginView: View {
                     register()
                 }
                 .padding(.trailing)
+                .font(.custom("Menlo", size: 20))
                 
                 Button("Log In") {
                     login()
                 }
                 .padding(.leading)
+                .font(.custom("Menlo", size: 20))
             }
             .padding(.top)
             .buttonStyle(.borderedProminent)
@@ -93,6 +97,7 @@ struct LoginView: View {
             }
             .padding(.top)
             .tint(.appcolor)
+            .font(.custom("Menlo", size: 20))
         }
         .padding()
         .alert(alertMessage, isPresented: $showingAlert) {

@@ -28,9 +28,10 @@ struct TicketCreateView: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            Text("My Ticket")
-                .font(.title)
+            Text("New Ticket")
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
+                .padding(.bottom, 20)
             
             HStack {
                 Text("Event Name:")
@@ -43,10 +44,12 @@ struct TicketCreateView: View {
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             HStack {
                 Text("Event Type:")
+                
+                Spacer()
                 
                 Picker("", selection: $eventType) {
                     ForEach(EventType.allCases, id: \.self) { eventType in
@@ -61,12 +64,12 @@ struct TicketCreateView: View {
                 .buttonStyle(.bordered)
                 .tint(.appcolor)
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             HStack {
                 DatePicker("Date:", selection: $date)
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             HStack {
                 Text("Location:")
@@ -79,7 +82,7 @@ struct TicketCreateView: View {
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             HStack {
                 Text("Seat Info:")
@@ -92,12 +95,12 @@ struct TicketCreateView: View {
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             HStack {
-                Text("Starting Price:")
+                Text("Starting Price (USD):")
                 
-                TextField("Enter Price (USD)", text: $price)
+                TextField("Enter Price", text: $price)
                     .keyboardType(.decimalPad)
                     .onChange(of: price) {
                         let filtered = filterPriceInput(price)
@@ -110,7 +113,7 @@ struct TicketCreateView: View {
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
             }
-            .font(.title2)
+            .padding(.bottom, 20)
             
             Button {
                 Task {
@@ -148,6 +151,7 @@ struct TicketCreateView: View {
             .buttonStyle(.borderedProminent)
             .tint(.appcolor)
             .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.bottom, 20)
             
             if let photo = photos.first, let url = URL(string: photo.imageURLString) {
                 AsyncImage(url: url) { image in
@@ -166,9 +170,9 @@ struct TicketCreateView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
             }
             
-            
             Spacer()
         }
+        .font(.custom("Menlo", size: 20))
         .onAppear() {
             eventName = ticket.eventName
             eventType = ticket.eventType

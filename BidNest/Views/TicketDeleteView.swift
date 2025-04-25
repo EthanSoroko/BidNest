@@ -6,10 +6,11 @@
 //
 
 import SwiftUI
+import FirebaseFirestore
 
 struct TicketDeleteView: View {
     @Environment(\.dismiss) private var dismiss
-    
+    @FirestoreQuery(collectionPath: "tickets") var photos: [Photo]
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
     @State private var profile = Profile()
@@ -19,7 +20,7 @@ struct TicketDeleteView: View {
     var body: some View {
         VStack(alignment: .leading) {
             Text(ticket.eventName)
-                .font(.title)
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
                 .padding(.bottom)
             
@@ -29,7 +30,6 @@ struct TicketDeleteView: View {
                 
                 Text(ticket.eventType.displayName)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -38,7 +38,6 @@ struct TicketDeleteView: View {
                 
                 Text(String(ticket.date.formatted()))
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -47,7 +46,6 @@ struct TicketDeleteView: View {
                 
                 Text(ticket.location)
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -56,7 +54,6 @@ struct TicketDeleteView: View {
                 
                 Text(ticket.additionalInfo ?? "")
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -65,7 +62,6 @@ struct TicketDeleteView: View {
                 
                 Text("\(ticket.price.formatted(.currency(code: "USD")))")
             }
-            .font(.title2)
             .padding(.bottom)
             
             HStack {
@@ -74,10 +70,28 @@ struct TicketDeleteView: View {
                 
                 Text(ticket.highestBidderId == profile.id ? "None" : ticket.highestBidderName)
             }
-            .font(.title2)
+            .padding(.bottom)
+            
+            if let photo = photos.first, let url = URL(string: photo.imageURLString) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFit()
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } placeholder: {
+                    ProgressView()
+                        .tint(.appcolor)
+                }
+            } else {
+                Text("Ticket Photo Missing.")
+                    .foregroundColor(.gray)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            }
             
             Spacer()
         }
+        .padding(.bottom, 20)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Cancel", role: .destructive) {
@@ -94,6 +108,7 @@ struct TicketDeleteView: View {
                 }
             }
         }
+        .font(.custom("Menlo", size: 20))
         .navigationBarBackButtonHidden()
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -101,6 +116,9 @@ struct TicketDeleteView: View {
         .toolbarVisibility(.hidden, for: .tabBar)
         .task {
             profile = await profileVM.getProfile()
+            if ticket.id != nil {
+                $photos.path = "tickets/\(ticket.id ?? "")/photos"
+            }
         }
     }
 }

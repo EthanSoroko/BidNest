@@ -18,11 +18,11 @@ struct PasswordInfoView: View {
                 .scaledToFit()
             
             Text("Password Rules:")
-                .font(.title)
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
                 .padding(.bottom)
             
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: 10) {
                 Text("1: Must be at least 10 characters long")
                 
                 Text("2: Must contain an Uppercase Letter")
@@ -31,14 +31,15 @@ struct PasswordInfoView: View {
                 
                 Text("4: Must contain a special character (e.g., !@#$%^&*())")
             }
-            .font(.title2)
+            .padding(.bottom, 10)
+            .font(.custom("Menlo", size: 20))
             
             Button("Okay") {
                 dismiss()
             }
             .buttonStyle(.borderedProminent)
             .tint(.appcolor)
-            .font(.title2)
+            .font(.custom("Menlo", size: 20))
         }
         .padding()
         .frame(maxWidth: .infinity, maxHeight: .infinity)

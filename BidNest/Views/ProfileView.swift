@@ -25,7 +25,7 @@ struct ProfileView: View {
     var body: some View {
         VStack {
             Text("My Profile")
-                .font(.title)
+                .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)
             
             ZStack(alignment: .topTrailing) {
@@ -97,7 +97,7 @@ struct ProfileView: View {
                 
                 Spacer()
             }
-            .font(.title2)
+            .font(.custom("Menlo", size: 18))
             .padding()
             
             HStack {
@@ -108,7 +108,7 @@ struct ProfileView: View {
                 
                 Spacer()
             }
-            .font(.title2)
+            .font(.custom("Menlo", size: 18))
             .padding()
             
             Spacer()
@@ -123,7 +123,7 @@ struct ProfileView: View {
                     print("😡 ERROR: Could not sign out!")
                 }
             }
-            .font(.title2)
+            .font(.custom("Menlo", size: 20))
             .tint(.appcolor)
             .padding(.bottom)
         }

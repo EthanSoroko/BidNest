@@ -59,7 +59,6 @@ struct UserTicketListView: View {
                                         
                                         Text(ticket.eventName)
                                     }
-                                    .font(.title2)
                                     
                                     HStack {
                                         Text("\(ticket.date.formatted())")
@@ -69,6 +68,7 @@ struct UserTicketListView: View {
                                         Text("$\(ticket.price.formatted(.number.precision(.fractionLength(2))))")
                                             .padding(.trailing)
                                     }
+                                    .font(.custom("Menlo", size: 15))
                                 }
                             }
                             .listRowBackground(Color.bgcolor.opacity(0.1))
@@ -78,13 +78,21 @@ struct UserTicketListView: View {
                 .task {
                     await fetchFilteredTickets()
                 }
-                .navigationTitle("Bought Tickets:")
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Bought Tickets")
+                            .padding(.top, 60)
+                            .font(.custom("Menlo", size: 28))
+                            .fontWeight(.bold)
+                    }
+                }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)
                 .background(Color.bgcolor)
                 .listStyle(.plain)
                 .listItemTint(.appcolor)
             }
+            .font(.custom("Menlo", size: 20))
         }
     }
     
