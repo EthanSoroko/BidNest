@@ -83,6 +83,14 @@ struct TicketOwnedView: View {
             
             Spacer()
         }
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("< Back") {
+                    dismiss()
+                }
+            }
+        }
+        .navigationBarBackButtonHidden()
         .font(.custom("Menlo", size: 20))
         .padding()
         .task {

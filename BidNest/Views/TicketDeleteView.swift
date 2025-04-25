@@ -82,6 +82,7 @@ struct TicketDeleteView: View {
                 } placeholder: {
                     ProgressView()
                         .tint(.appcolor)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
             } else {
                 Text("Ticket Photo Missing.")

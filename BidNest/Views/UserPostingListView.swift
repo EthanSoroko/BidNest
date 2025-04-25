@@ -50,7 +50,7 @@ struct UserPostingListView: View {
                 
                 List {
                     ForEach(filteredTickets) { ticket in
-                        if ticket.sellerId == Auth.auth().currentUser?.uid && ticket.date > Date() {
+                        if ticket.sellerId == Auth.auth().currentUser?.uid && ticket.date > Date().addingTimeInterval(2 * 60 * 60) {
                             NavigationLink {
                                 TicketDeleteView(ticket: ticket)
                             } label: {
@@ -86,17 +86,18 @@ struct UserPostingListView: View {
                         }
                         .tint(.appcolor)
                     }
-                }
-                .task {
-                    await fetchFilteredTickets()
-                }
-                .toolbar {
+                    
                     ToolbarItem(placement: .principal) {
                         Text("My Auction Listings")
-                            .padding(.top, 60)
-                            .font(.custom("Menlo", size: 28))
+                            .padding(.top, 10)
+                            .font(.custom("Menlo", size: 25))
                             .fontWeight(.bold)
                     }
+                }
+                .navigationTitle(" ")
+                .navigationBarTitleDisplayMode(.inline)
+                .task {
+                    await fetchFilteredTickets()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)

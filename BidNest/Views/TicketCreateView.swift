@@ -27,7 +27,7 @@ struct TicketCreateView: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack(alignment: .leading) {
+        ScrollView() {
             Text("New Ticket")
                 .font(.custom("Menlo", size: 30))
                 .fontWeight(.bold)

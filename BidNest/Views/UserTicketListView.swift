@@ -48,7 +48,7 @@ struct UserTicketListView: View {
                 
                 List {
                     ForEach(filteredTickets) { ticket in
-                        if ticket.highestBidderId == Auth.auth().currentUser?.uid && ticket.date < Date() {
+                        if ticket.highestBidderId == Auth.auth().currentUser?.uid && ticket.date < Date().addingTimeInterval(2 * 60 * 60) {
                             NavigationLink {
                                 TicketOwnedView(ticket: ticket)
                             } label: {
@@ -81,11 +81,13 @@ struct UserTicketListView: View {
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("Bought Tickets")
-                            .padding(.top, 60)
+                            .padding(.top, 10)
                             .font(.custom("Menlo", size: 28))
                             .fontWeight(.bold)
                     }
                 }
+                .navigationTitle(" ")
+                .navigationBarTitleDisplayMode(.inline)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)
                 .background(Color.bgcolor)

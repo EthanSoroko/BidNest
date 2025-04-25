@@ -63,7 +63,7 @@ struct PublicTicketListView: View {
                 
                 List {
                     ForEach(filteredTickets) { ticket in
-                        if ticket.sellerId != Auth.auth().currentUser?.uid && ticket.date > Date() {
+                        if ticket.sellerId != Auth.auth().currentUser?.uid && ticket.date > Date().addingTimeInterval(2 * 60 * 60) {
                             NavigationLink {
                                 TicketBidView(ticket: ticket)
                             } label: {
@@ -96,11 +96,13 @@ struct PublicTicketListView: View {
                 .toolbar {
                     ToolbarItem(placement: .principal) {
                         Text("Public Ticket Auction")
-                            .padding(.top, 60)
+                            .padding(.top, 10)
                             .font(.custom("Menlo", size: 28))
                             .fontWeight(.bold)
                     }
                 }
+                .navigationTitle(" ")
+                .navigationBarTitleDisplayMode(.inline)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .padding(.trailing)
                 .background(Color.bgcolor)
