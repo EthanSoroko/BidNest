@@ -11,6 +11,13 @@ import FirebaseFirestore
 import FirebaseAuth
 
 struct TicketCreateView: View {
+    enum Field {
+        case eventName
+        case venue
+        case additionalInfo
+        case ticketPrice
+    }
+    
     @FirestoreQuery(collectionPath: "tickets") var photos: [Photo]
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
@@ -23,7 +30,7 @@ struct TicketCreateView: View {
     @State private var profile = Profile()
     @State var ticket: Ticket
     @State private var photoSheetIsPresented = false
-    
+    @FocusState private var focusField: Field?
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
@@ -36,13 +43,14 @@ struct TicketCreateView: View {
             HStack {
                 Text("Event Name:")
                 
-                TextField("Event Name", text: $eventName, axis: .vertical)
+                TextField("Event Name", text: $eventName)
                     .textFieldStyle(.roundedBorder)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
+                    .focused($focusField, equals: .eventName)
             }
             .padding(.bottom, 20)
             
@@ -74,26 +82,28 @@ struct TicketCreateView: View {
             HStack {
                 Text("Location:")
                 
-                TextField("Address / Venue", text: $location, axis: .vertical)
+                TextField("Address / Venue", text: $location)
                     .textFieldStyle(.roundedBorder)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
+                    .focused($focusField, equals: .venue)
             }
             .padding(.bottom, 20)
             
             HStack {
                 Text("Seat Info:")
                 
-                TextField("Seat No. & Section", text: $additionalInfo, axis: .vertical)
+                TextField("Seat No. & Section", text: $additionalInfo)
                     .textFieldStyle(.roundedBorder)
                     .clipShape(RoundedRectangle(cornerRadius: 16))
                     .overlay {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
+                    .focused($focusField, equals: .additionalInfo)
             }
             .padding(.bottom, 20)
             
@@ -102,6 +112,7 @@ struct TicketCreateView: View {
                 
                 TextField("Enter Price", text: $price)
                     .keyboardType(.decimalPad)
+                    .submitLabel(.done)
                     .onChange(of: price) {
                         let filtered = filterPriceInput(price)
                         price = filtered
@@ -112,6 +123,15 @@ struct TicketCreateView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Done") {
+                                    focusField = nil
+                                }
+                            }
+                        }
+                    .focused($focusField, equals: .ticketPrice)
             }
             .padding(.bottom, 20)
             
@@ -189,6 +209,10 @@ struct TicketCreateView: View {
         .navigationBarBackButtonHidden()
         .task {
             profile = await profileVM.getProfile()
+        }
+        .submitLabel(.done)
+        .onSubmit{
+            focusField = nil
         }
         .onChange(of: ticket.id) {
             Task {

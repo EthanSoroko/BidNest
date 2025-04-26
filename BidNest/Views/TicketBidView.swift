@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct TicketBidView: View {
-    @Environment(\.dismiss) private var dismiss
+    enum Field: Hashable {
+        case ticketPrice
+    }
     
+    @Environment(\.dismiss) private var dismiss
     @State private var profileVM = ProfileViewModel()
     @State private var ticketVM = TicketViewModel()
     @State private var profile = Profile()
@@ -17,6 +20,7 @@ struct TicketBidView: View {
     @State private var bidOffer = "0.00"
     @State private var bidOffers = ["1.00", "1.00", "1.00"]
     @State private var bidDisabled = true
+    @FocusState private var focusField: Field?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -81,6 +85,7 @@ struct TicketBidView: View {
                 
                 TextField("Enter Price", text: $bidOffer)
                     .keyboardType(.decimalPad)
+                    .submitLabel(.done)
                     .onChange(of: bidOffer) {
                         let filtered = filterPriceInput(bidOffer)
                         bidOffer = filtered
@@ -91,6 +96,15 @@ struct TicketBidView: View {
                         RoundedRectangle(cornerRadius: 16)
                             .stroke(.gray.opacity(0.5), lineWidth: 2)
                     }
+                    .toolbar {
+                        ToolbarItemGroup(placement: .keyboard) {
+                                Spacer()
+                                Button("Done") {
+                                    focusField = nil
+                                }
+                            }
+                        }
+                    .focused($focusField, equals: .ticketPrice)
             }
             .padding(.bottom)
             
@@ -154,6 +168,7 @@ struct TicketBidView: View {
         .task {
             profile = await profileVM.getProfile()
         }
+        .submitLabel(.done)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Cancel", role: .destructive) {

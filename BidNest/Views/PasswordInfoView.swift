@@ -24,7 +24,7 @@ struct PasswordInfoView: View {
             
             VStack(alignment: .leading, spacing: 10) {
                 Text("1: Must be at least 10 characters long")
-                
+                    
                 Text("2: Must contain an Uppercase Letter")
                 
                 Text("3: Must contain a number")
@@ -33,6 +33,7 @@ struct PasswordInfoView: View {
             }
             .padding(.bottom, 10)
             .font(.custom("Menlo", size: 20))
+            .minimumScaleFactor(0.5)
             
             Button("Okay") {
                 dismiss()

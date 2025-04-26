@@ -108,11 +108,15 @@ struct PublicTicketListView: View {
                 .background(Color.bgcolor)
                 .listStyle(.plain)
                 .listItemTint(.appcolor)
-                .sheet(isPresented: $sheetIsPresented) {
+                .sheet(isPresented: $sheetIsPresented, onDismiss: {
+                    Task {
+                        await fetchFilteredTickets()
+                    }
+                }, content: {
                     NavigationStack {
                         TicketCreateView(ticket: Ticket())
                     }
-                }
+                })
                 .sheet(isPresented: $auctionInfoShown) {
                     AuctionInfoView()
                 }

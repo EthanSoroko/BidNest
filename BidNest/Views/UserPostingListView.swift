@@ -104,11 +104,15 @@ struct UserPostingListView: View {
                 .background(Color.bgcolor)
                 .listStyle(.plain)
                 .listItemTint(.appcolor)
-                .sheet(isPresented: $sheetIsPresented) {
+                .sheet(isPresented: $sheetIsPresented, onDismiss: {
+                    Task {
+                        await fetchFilteredTickets()
+                    }
+                }, content: {
                     NavigationStack {
                         TicketCreateView(ticket: Ticket())
                     }
-                }
+                })
             }
             .font(.custom("Menlo", size: 20))
         }
