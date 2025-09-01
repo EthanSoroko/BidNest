@@ -296,3 +296,4 @@ struct TicketCreateView: View {
         additionalInfo: "Student section, row 12"
     ))
 }
+
